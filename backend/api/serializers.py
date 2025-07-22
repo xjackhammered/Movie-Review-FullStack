@@ -6,22 +6,9 @@ class GenreSerializer(serializers.ModelSerializer):
         model = Genre
         fields = '__all__'
 
-class MovieSerializer(serializers.ModelSerializer):
-    genres = GenreSerializer(many=True, read_only=True)
-
-    genre_ids = serializers.PrimaryKeyRelatedField(
-        queryset = Genre.objects.all(),
-        many=True,
-        write_only=True,
-        source = 'genres'
-    )
-
-    class Meta:
-        model = Movie
-        fields = ['id', 'name', 'director', 'genres', 'genre_ids', 'created_at']
 
 class ReviewSerializer(serializers.ModelSerializer):
-    movie = MovieSerializer(read_only=True)
+    movie = serializers.StringRelatedField(read_only=True)
 
     movie_id = serializers.PrimaryKeyRelatedField(
         queryset = Movie.objects.all(),
@@ -32,3 +19,23 @@ class ReviewSerializer(serializers.ModelSerializer):
     class Meta:
         model = Review
         fields = ['id', 'content', 'rating', 'movie', 'movie_id', 'created_at']
+
+
+
+class MovieSerializer(serializers.ModelSerializer):
+    genres = GenreSerializer(many=True, read_only=True)
+
+    genre_ids = serializers.PrimaryKeyRelatedField(
+        queryset = Genre.objects.all(),
+        many=True,
+        write_only=True,
+        source = 'genres'
+    )
+
+    reviews = ReviewSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Movie
+        fields = ['id', 'name', 'director', 'genres', 'genre_ids', 'created_at', 'reviews']
+
+    
