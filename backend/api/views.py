@@ -29,3 +29,19 @@ def movieUpdate(request, id):
         serializer.save()
     
     return Response(serializer.data)
+
+@api_view(['POST'])
+def addMovie(request):
+    serializer = MovieSerializer(data=request.data)
+
+    if serializer.is_valid():
+        serializer.save()
+    
+    return Response(serializer.data)
+
+@api_view(['DELETE'])
+def deleteMovie(request, id):
+    movie = Movie.objects.get(id=id)
+    movie.delete()
+
+    return Response("Movie deleted successfully!")
